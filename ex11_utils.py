@@ -3,7 +3,7 @@ from boggle_board_randomizer import randomize_board
 
 Board = List[List[str]]
 Path = List[Tuple[int, int]]
-Location = [Tuple[int, int]]
+Location = Tuple[int, int]
 
 WORDS_TXT_DICT_PATH = "boggle_dict.txt"
 
@@ -32,16 +32,23 @@ def _check_if_neighbor_cells(cell1: Location, cell2: Location) -> bool:
     return abs(cell1[0] - cell2[0]) <= 1 and abs(cell1[1] - cell2[1]) <= 1
 
 
-def _all_valid_neighbors(cell: Location, board: Board) -> List[Tuple[int, int]]:
+def get_board_cells(board: Board) -> Iterable[Location]:
+    """return an iterator of cells in the board"""
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            yield y, x
+
+
+def _all_valid_neighbors(cell: Location, board: Board) -> Iterable[Tuple[int, int]]:
     """return a list of coordinates of all neighboring cells of a given cell
     In practice each of these neighbors would be a valid step from the cell"""
     min_x, max_x = max(0, cell[1] - 1), min(len(board[0]), cell[1] + 1)
     min_y, max_y = max(0, cell[0] - 1), min(len(board), cell[0] + 1)
-    neighbor_list = [(x, y) for x in range(min_x, max_x) for y in range(min_y, max_y)]
+    neighbor_list = [(x, y) for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
     if cell in neighbor_list:
         neighbor_list.remove(cell)
-    return neighbor_list
-
+    # return only neighbors in the board limits:
+    return filter(lambda loc: _is_coordinate_in_board_limits(board, loc), neighbor_list)
 
 def _is_valid_board_path(board: Board, path: Path) -> bool:
     """return True if every two coordinates are valid neighbors"""
@@ -66,16 +73,37 @@ def is_valid_path(board: Board, path: Path, words: Iterable[str]) -> Optional[st
             return word_in_path
 
 
+def _n_length_path_helper(n: int, cell: Location, board: Board, words: Iterable[str], path, path_lst):
+    """starting from a specific cell iterate over all of its possible paths.
+    when a path is n-long and assembles a word from the dict, add it to the path list"""
+    # Add current cell to the word and path
+    path.append(cell)
+    # Success condition - add the path to the path list
+    if len(path) == n and is_valid_path(board, path, words):
+        path_lst.append(path.copy())
+    # Iterate on one of the cell's not-yet-used neighbors
+    if len(path) <= n:
+        for neighbor in _all_valid_neighbors(cell, board):
+            if neighbor not in path:
+                _n_length_path_helper(n, neighbor, board, words, path, path_lst)
+    # Remove the cell from the word and path to backtrack
+    path.remove(cell)
+
 def find_length_n_paths(n: int, board: Board, words: Iterable[str]) -> List[Path]:
-    pass
+    path_lst = []
+    board_cells = get_board_cells(board)
+    for cell in board_cells:
+        path = []
+        _n_length_path_helper(n, cell, board, words, path, path_lst)
+    return path_lst
 
 
 def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path]:
     path_lst = []
-    for y in range(len(board)):
-        for x in range(len(board[0])):
-            path = []
-            _n_words_helper(n, (y, x), board, '', words, path, path_lst)
+    board_cells = get_board_cells(board)
+    for cell in board_cells:
+        path = []
+        _n_words_helper(n, cell, board, '', words, path, path_lst)
     return path_lst
 
 
