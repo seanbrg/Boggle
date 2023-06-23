@@ -66,8 +66,29 @@ def is_valid_path(board: Board, path: Path, words: Iterable[str]) -> Optional[st
             return word_in_path
 
 
+def _n_length_path_helper(n: int, cell: Location, board: Board, words: Iterable[str], path, path_lst):
+    """starting from a specific cell iterate over all of its possible paths.
+    when a path is n-long and assembles a word from the dict, add it to the path list"""
+    # Add current cell to the word and path
+    path.append(cell)
+    # Success condition - add the path to the path list
+    if len(path) == n and is_valid_path(board, path, words):
+        path_lst.append(path.copy())
+    # Iterate on one of the cell's not-yet-used neighbors
+    if len(path) <= n:
+        for neighbor in _all_valid_neighbors(cell, board):
+            if neighbor not in path:
+                _n_length_path_helper(n, neighbor, board, words, path, path_lst)
+    # Remove the cell from the word and path to backtrack
+    path.remove(cell)
+
 def find_length_n_paths(n: int, board: Board, words: Iterable[str]) -> List[Path]:
-    pass
+    path_lst = []
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            path = []
+            _n_length_path_helper(n, (y, x), board, words, path, path_lst)
+    return path_lst
 
 
 def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path]:
