@@ -32,16 +32,16 @@ def _check_if_neighbor_cells(cell1: Location, cell2: Location) -> bool:
     return abs(cell1[0] - cell2[0]) <= 1 and abs(cell1[1] - cell2[1]) <= 1
 
 
-def _all_valid_neighbors(cell: Location, board: Board) -> List[Tuple[int, int]]:
+def _all_valid_neighbors(cell: Location, board: Board) -> Iterable[Tuple[int, int]]:
     """return a list of coordinates of all neighboring cells of a given cell
     In practice each of these neighbors would be a valid step from the cell"""
     min_x, max_x = max(0, cell[1] - 1), min(len(board[0]), cell[1] + 1)
     min_y, max_y = max(0, cell[0] - 1), min(len(board), cell[0] + 1)
-    neighbor_list = [(x, y) for x in range(min_x, max_x) for y in range(min_y, max_y)]
+    neighbor_list = [(x, y) for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
     if cell in neighbor_list:
         neighbor_list.remove(cell)
-    return neighbor_list
-
+    # return only neighbors in the board limits:
+    return filter(lambda loc: _is_coordinate_in_board_limits(board, loc), neighbor_list)
 
 def _is_valid_board_path(board: Board, path: Path) -> bool:
     """return True if every two coordinates are valid neighbors"""
