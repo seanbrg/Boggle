@@ -37,8 +37,9 @@ def _all_valid_neighbors(cell: Location, board: Board) -> List[Tuple[int, int]]:
     In practice each of these neighbors would be a valid step from the cell"""
     min_x, max_x = max(0, cell[1] - 1), min(len(board[0]), cell[1] + 1)
     min_y, max_y = max(0, cell[0] - 1), min(len(board), cell[0] + 1)
-    neighbor_list = [(x,y) for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
-    neighbor_list.remove(cell)
+    neighbor_list = [(x,y) for x in range(min_x, max_x) for y in range(min_y, max_y)]
+    if cell in neighbor_list:
+        neighbor_list.remove(cell)
     return neighbor_list
 
 
@@ -76,28 +77,28 @@ def find_length_n_paths(n: int, board: Board, words: Iterable[str]) -> List[Path
 
 def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path]:
     path_lst = []
-    for cell in _cells_in_board(board):
-        path = []
-        _n_words_helper(n, cell, board, "", words, path)
-        path_lst.append(path)
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            path = []
+            _n_words_helper(n, (y, x), board, '', words, path, path_lst)
+    for path in path_lst:
+        print(is_valid_path(board, path, words))
     return path_lst
 
 
-def _n_words_helper(n: int, cell: Location, board: Board, word: str, words: Iterable[str], path) -> bool:
+def _n_words_helper(n: int, cell: Location, board: Board, word: str, words: Iterable[str], path, path_lst):
     """starting from a specific cell iterate and backtrack over all of its possible paths
     and write down the path until the word assembled is valid and has n letters"""
-    if len(word) == n and word in words:
-        word -= board[cell[0]][cell[1]]
-        path.remove(cell)
-        return True
+    if len(word) == n and word in words and path not in path_lst:
+        path_lst.append(path.copy())
     path.append(cell)
     word += board[cell[0]][cell[1]]
-    for neighbor in _all_valid_neighbors(cell, board):
-        if _n_words_helper(n, neighbor, board, word, words):
-            return True
-        else:
-            word -= board[neighbor[0]][neighbor[1]]
-    return False
+    if len(word) <= n:
+        for neighbor in _all_valid_neighbors(cell, board):
+            if neighbor not in path:
+                _n_words_helper(n, neighbor, board, word, words, path, path_lst)
+    word = word[:-1]
+    path.remove(cell)
 
 
 def max_score_paths(board: Board, words: Iterable[str]) -> List[Path]:
@@ -107,9 +108,4 @@ def max_score_paths(board: Board, words: Iterable[str]) -> List[Path]:
 if __name__ == '__main__':
     words = _create_words_set(WORDS_TXT_DICT_PATH)
     board = randomize_board()
-
-    # #### shahar test:
-    # board = [['D', 'C', 'B', 'A'], ['G', 'U', 'D', 'E'], ['T', 'J', 'Y', 'T'], ['N', 'M', 'F', 'I']] # board from the example for tests
-    # path = [(0,2),(1,3),(1,2)]
-    # path2 = [(3,2),(3,3),(2,3)]
-    # print(is_valid_path(board, path2, words))
+    print(find_length_n_words(3, board, words))
