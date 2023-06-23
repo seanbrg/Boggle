@@ -76,25 +76,25 @@ def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path
         for x in range(len(board[0])):
             path = []
             _n_words_helper(n, (y, x), board, '', words, path, path_lst)
-    for path in path_lst:
-        print(is_valid_path(board, path, words))
     return path_lst
 
 
 def _n_words_helper(n: int, cell: Location, board: Board, word: str, words: Iterable[str], path, path_lst):
-    """starting from a specific cell iterate and backtrack over all of its possible paths
-    and write down the path until the word assembled is valid and has n letters"""
+    """starting from a specific cell iterate over all of its possible paths.
+    when a path that assembles an n-long word is found, add it to the path list"""
+    # Add current cell to the word and path
     path.append(cell)
     word += board[cell[0]][cell[1]]
-
+    # Success condition - add the path to the path list
+    if len(word) == n and word in words and path not in path_lst:
+        path_lst.append(path.copy())
+    # Iterate on one of the cell's not-yet-used neighbors
     if len(word) <= n:
-        if len(word) == n and word in words and path not in path_lst:
-            path_lst.append(path.copy())
         for neighbor in _all_valid_neighbors(cell, board):
             if neighbor not in path:
                 _n_words_helper(n, neighbor, board, word, words, path, path_lst)
-
-    word = word[:-1]  # Remove the last character from the word
+    # Remove the cell from the word and path to backtrack
+    word = word[:-1]
     path.remove(cell)
 
 
@@ -105,5 +105,9 @@ def max_score_paths(board: Board, words: Iterable[str]) -> List[Path]:
 if __name__ == '__main__':
     words = _create_words_set(WORDS_TXT_DICT_PATH)
     board = randomize_board()
+    # TEST
     print(board)
-    print(find_length_n_words(5, board, words))
+    lst = find_length_n_words(5, board, words)
+    print(lst)
+    for path in lst:
+        print(is_valid_path(board, path, words))
