@@ -44,23 +44,18 @@ def _all_valid_neighbors(cell: Location, board: Board) -> List[Tuple[int, int]]:
 
 
 def _is_valid_board_path(board: Board, path: Path) -> bool:
-    """return True if every two coordinates are neighbors and in the board limits"""
-    # Make sure the coordinates are in the board, so we won't get an index error when accessing them later
-    is_valid = True
-    for cell_i in range(len(path) - 1):
-        if not _check_if_neighbor_cells(path[cell_i], path[cell_i + 1]) \
-                or not (_is_coordinate_in_board_limits(board, path[cell_i]) and
-                        _is_coordinate_in_board_limits(board, path[cell_i + 1])):
-            is_valid = False
-            break
-    return is_valid
+    """return True if every two coordinates are valid neighbors"""
+    for i in range(len(path)-1):
+        if path[i+1] not in _all_valid_neighbors(path[i], board):
+            return False
+    return True
 
 
 def _get_word_in_path(board: Board, path: Path):
     """connect the letters in the path to a word"""
     word = ""
-    for coordinate in path:
-        word += board[coordinate[0]][coordinate[1]]
+    for cell in path:
+        word += board[cell[0]][cell[1]]
     return word
 
 
@@ -89,15 +84,17 @@ def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path
 def _n_words_helper(n: int, cell: Location, board: Board, word: str, words: Iterable[str], path, path_lst):
     """starting from a specific cell iterate and backtrack over all of its possible paths
     and write down the path until the word assembled is valid and has n letters"""
-    if len(word) == n and word in words and path not in path_lst:
-        path_lst.append(path.copy())
     path.append(cell)
     word += board[cell[0]][cell[1]]
+
     if len(word) <= n:
+        if len(word) == n and word in words and path not in path_lst:
+            path_lst.append(path.copy())
         for neighbor in _all_valid_neighbors(cell, board):
             if neighbor not in path:
                 _n_words_helper(n, neighbor, board, word, words, path, path_lst)
-    word = word[:-1]
+
+    word = word[:-1]  # Remove the last character from the word
     path.remove(cell)
 
 
@@ -108,4 +105,5 @@ def max_score_paths(board: Board, words: Iterable[str]) -> List[Path]:
 if __name__ == '__main__':
     words = _create_words_set(WORDS_TXT_DICT_PATH)
     board = randomize_board()
-    print(find_length_n_words(3, board, words))
+    print(board)
+    print(find_length_n_words(5, board, words))
