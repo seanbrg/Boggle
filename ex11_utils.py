@@ -3,7 +3,7 @@ from boggle_board_randomizer import randomize_board
 
 Board = List[List[str]]
 Path = List[Tuple[int, int]]
-Location = [Tuple[int, int]]
+Location = Tuple[int, int]
 
 WORDS_TXT_DICT_PATH = "boggle_dict.txt"
 
@@ -30,6 +30,13 @@ def _is_coordinate_in_board_limits(board: Board, coordinate: Location) -> bool:
 def _check_if_neighbor_cells(cell1: Location, cell2: Location) -> bool:
     """return True if the cells are next or diagonal to each other"""
     return abs(cell1[0] - cell2[0]) <= 1 and abs(cell1[1] - cell2[1]) <= 1
+
+
+def get_board_cells(board: Board) -> Iterable[Location]:
+    """return an iterator of cells in the board"""
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            yield y, x
 
 
 def _all_valid_neighbors(cell: Location, board: Board) -> Iterable[Tuple[int, int]]:
@@ -84,19 +91,19 @@ def _n_length_path_helper(n: int, cell: Location, board: Board, words: Iterable[
 
 def find_length_n_paths(n: int, board: Board, words: Iterable[str]) -> List[Path]:
     path_lst = []
-    for y in range(len(board)):
-        for x in range(len(board[0])):
-            path = []
-            _n_length_path_helper(n, (y, x), board, words, path, path_lst)
+    board_cells = get_board_cells(board)
+    for cell in board_cells:
+        path = []
+        _n_length_path_helper(n, cell, board, words, path, path_lst)
     return path_lst
 
 
 def find_length_n_words(n: int, board: Board, words: Iterable[str]) -> List[Path]:
     path_lst = []
-    for y in range(len(board)):
-        for x in range(len(board[0])):
-            path = []
-            _n_words_helper(n, (y, x), board, '', words, path, path_lst)
+    board_cells = get_board_cells(board)
+    for cell in board_cells:
+        path = []
+        _n_words_helper(n, cell, board, '', words, path, path_lst)
     return path_lst
 
 
