@@ -1,11 +1,11 @@
 import tkinter as tk
+from typing import Tuple
 
 import colors
-from gui_elements.letters_board_frame import LettersBoardFrame
-
-from typing import Tuple, Dict, Callable
-
 import styles
+from gui_elements.letters_board_frame import LettersBoardFrame
+from gui_elements.correct_words_frame import CorrectWordsFrame
+
 
 Location = Tuple[int, int]
 
@@ -25,8 +25,8 @@ class BoggleGUI:
         self.root = tk.Tk()
         self._config_root()
         self.seconds = 0
-        self.correct_words = {}
-
+        # self.correct_words = {}
+        self.correct_words = []
 
         # enter frame:
         self.enter_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
@@ -57,8 +57,8 @@ class BoggleGUI:
         self.score_label = tk.Label(self.score_frame, text=INITIAL_SCORE_LABEL_TEXT, **styles.LABEL_STYLE, width=5)
 
         #correct words frame:
-        self.correct_words_frame = tk.Frame(self.middle_game_frame)
-
+        # self.correct_words_frame = tk.Frame(self.middle_game_frame)
+        self.correct_words_frame = CorrectWordsFrame(self.middle_game_frame)
         self._position_frames()
 
 
@@ -70,10 +70,15 @@ class BoggleGUI:
         self.timer_display_label.configure(text=formatted_time)
 
     def set_correct_word(self, last_correct_word):
+        # if last_correct_word and last_correct_word not in self.correct_words:
+        #     self.correct_words[last_correct_word] = tk.Label(self.correct_words_frame, text=last_correct_word,
+        #                                                      **styles.CORRECT_WORDS_LABEL_STYLE)
+        #     self.correct_words[last_correct_word].pack(fill=tk.BOTH)
+
         if last_correct_word and last_correct_word not in self.correct_words:
-            self.correct_words[last_correct_word] = tk.Label(self.correct_words_frame, text=last_correct_word,
-                                                             **styles.CORRECT_WORDS_LABEL_STYLE)
-            self.correct_words[last_correct_word].pack(fill=tk.BOTH)
+            self.correct_words.append(last_correct_word)
+            self.correct_words_frame.add_word(last_correct_word)
+        # self.correct_words[last_correct_word].pack(fill=tk.BOTH)
 
     def position_score_frame(self):
         """position the title and the score in a frame"""
@@ -89,8 +94,6 @@ class BoggleGUI:
         self.root.configure(styles.MAIN_WINDOW_STYLE)
         self.root.title(WINDOW_TITLE)
 
-    def position_game_frame(self):
-        self.selected_word_label.pack(fill=tk.X, expand=True)
 
     def position_action_buttons_frame(self):
         self.__clear_word_button.pack()
@@ -104,12 +107,14 @@ class BoggleGUI:
         # self.__clear_word_button.pack(side=tk.LEFT, padx=25)
         self.position_action_buttons_frame()
         self.action_button_frame.pack(side=tk.LEFT)
-        self.correct_words_frame.pack(side=tk.RIGHT, padx=(0,100))
+        self.correct_words_frame.get_frame().pack(side=tk.RIGHT, padx=(0, 100))
+        # self.correct_words_frame.pack(side=tk.RIGHT, padx=(0, 100))
         self.middle_game_frame.pack(padx=20, pady=30, fill=tk.BOTH)
         self.score_frame.pack(side=tk.BOTTOM, pady=(0, 20))
         self.position_score_frame()
-        self.start_game_button.pack()
+        self.start_game_button.pack(pady=200)
         self.enter_frame.pack()
+        self.play_again_button.pack(pady=200)
         # self.game_frame.pack(expand=True, fill=tk.BOTH)
 
     def set_selected_word(self, word):
@@ -132,15 +137,14 @@ class BoggleGUI:
 
     def clear_state(self):
         self.set_selected_word("")
-        for word in self.correct_words:
-            self.correct_words[word].pack_forget()
+        self.correct_words_frame.remove_correct_words_labels()
         self.correct_words.clear()
         self.set_score("0")
 
     def finish_game(self):
         self.clear_state()
         self.game_frame.pack_forget()
-        self.play_again_button.pack()
+
         self.game_over_frame.pack()
 
     def start_timer(self):
