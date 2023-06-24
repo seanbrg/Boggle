@@ -1,6 +1,7 @@
 from typing import Dict, Tuple, Callable
 from boggle_board_randomizer import randomize_board
 import ex11_utils
+import helpers
 WORDS_TXT_DICT_PATH = "boggle_dict.txt"
 
 Location = Tuple[int, int]
@@ -9,7 +10,7 @@ class BoggleGame:
     """Manage boggle game logic"""
     def __init__(self):
         self.__board = [['A', 'L', 'N', 'WF'], ['T', 'L', 'E', 'L'], ['C', 'O', 'G', 'Y'], ['S', 'E', 'R', 'H']]
-        self.__words = ex11_utils.create_words_set(WORDS_TXT_DICT_PATH)
+        self.__words = helpers.create_words_set(WORDS_TXT_DICT_PATH)
         # self.__board = randomize_board()
         self.__score = 0
         self.selected_path = []
@@ -21,7 +22,7 @@ class BoggleGame:
     def create_game_buttons_dict(self) -> Dict[Location, str]:
         """return a dict with the button cell location and it's content"""
         buttons = {}
-        for cell in ex11_utils.get_board_cells(self.__board):
+        for cell in helpers.get_board_cells(self.__board):
             buttons[cell] = self.__board[cell[0]][cell[1]]
         return buttons
 
@@ -29,7 +30,7 @@ class BoggleGame:
         return self.game_buttons
 
     def get_selected_path_word(self):
-        return ex11_utils.get_word_in_path(self.__board, self.selected_path)
+        return helpers.get_word_in_path(self.__board, self.selected_path)
 
 
     def add_selected_cell(self, cell) -> str:
