@@ -35,7 +35,7 @@ def all_valid_neighbors(cell: Location, board: Board) -> Iterable[Tuple[int, int
     In practice each of these neighbors would be a valid step from the cell"""
     min_x, max_x = max(0, cell[1] - 1), min(len(board[0])-1, cell[1] + 1)
     min_y, max_y = max(0, cell[0] - 1), min(len(board)-1, cell[0] + 1)
-    neighbor_list = [(x, y) for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
+    neighbor_list = [(y, x) for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
     if cell in neighbor_list:
         neighbor_list.remove(cell)
     return neighbor_list
