@@ -8,17 +8,24 @@ LETTER_BUTTON_STYLE = {
 }
 
 ACTION_BUTTON_STYLE = {
-    "font": (DEFAULT_FONT_TYPE, 20),
-    "bg": colors.SUBMIT_BUTTON_COLOR,
-    "fg": colors.BUTTONS_TEXT_COLOR
+    "font": (DEFAULT_FONT_TYPE, 10),
+    "bg": colors.BUTTONS_COLOR,
+    "fg": colors.BUTTONS_TEXT_COLOR,
+    "width": 15,
+    "height": 2
 }
 
 MAIN_WINDOW_STYLE = {
     "bg": colors.BACKGROUND_COLOR
 }
 
-LABLE_STYLE = {
+LABEL_STYLE = {
     "font": (DEFAULT_FONT_TYPE, 20),
     "bg": colors.SUBMIT_BUTTON_COLOR,
     "fg": colors.BUTTONS_TEXT_COLOR
+}
+
+CORRECT_WORDS_LABEL_STYLE ={
+    "font": (DEFAULT_FONT_TYPE, 20),
+    "bg": colors.BACKGROUND_COLOR
 }

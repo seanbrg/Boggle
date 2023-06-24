@@ -10,7 +10,6 @@ class LetterButton:
         self.content = content
         self.button = tk.Button(parent_frame, text=content, **styles.LETTER_BUTTON_STYLE)
         self.position = position
-        # self.position_button()
 
     def position_button(self):
         self.button.grid(row=self.position[0], column=self.position[1], sticky=tk.NSEW)

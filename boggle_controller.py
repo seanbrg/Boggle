@@ -15,7 +15,7 @@ class BoggleController:
         for button in letters_buttons:
             letters_buttons[button].set_command(self.click_on_letter_button(button))
 
-        self.gui.get_submit_word_button().set_command(self.click_on_submit_word())
+        self.gui.set_submit_word_button_command(self.click_on_submit_word())
 
 
     def click_on_letter_button(self, button_cell_location):
@@ -29,8 +29,8 @@ class BoggleController:
         def submit_word():
             self.game.sumbit_guessed_word()
             self.gui.set_selected_word("")
-            print("******", self.game.get_score())
             self.gui.set_score(self.game.get_score())
+            self.gui.set_correct_word(self.game.get_last_correct_word())
         return submit_word
 
 

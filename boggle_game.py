@@ -55,6 +55,9 @@ class BoggleGame:
     def get_score(self):
         return self.__score
 
+    def get_last_correct_word(self):
+        return self.correct_words[-1] if self.correct_words else []
+
 
 
 if __name__ == '__main__':
