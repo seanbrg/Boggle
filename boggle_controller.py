@@ -17,7 +17,6 @@ class BoggleController:
         self.gui.set_submit_word_button_command(self.click_on_submit_word())
         self.gui.set_start_game_button_command(self.click_on_start_game())
 
-
     def click_on_letter_button(self, button_cell_location):
         def select_letter():
             self.game.add_selected_cell(button_cell_location)
@@ -33,10 +32,12 @@ class BoggleController:
             self.gui.set_correct_word(self.game.get_last_correct_word())
         return submit_word
 
+
     def click_on_start_game(self):
         def start_game():
             #todo: start timer
             self.gui.show_game_frame()
+            self.gui.start_timer()
         return start_game
 
 

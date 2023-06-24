@@ -15,7 +15,11 @@ class BoggleGUI:
     def __init__(self, game_buttons):
         self.root = tk.Tk()
         self._config_root()
+        self.seconds=7
+        # self.timer_display = tk.StringVar()
+        # self.timer_display.trace("w", self.update_timer_label)
         self.game_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
+        self.timer_display_label = tk.Label(self.game_frame, **styles.LABEL_STYLE)
         self.enter_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
         self.start_game_button = tk.Button(self.enter_frame, **styles.ACTION_BUTTON_STYLE, text=START_GAME_BUTTON_TEXT)
         self.main_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)
@@ -31,18 +35,9 @@ class BoggleGUI:
         self._position_frames()
 
 
-        # self.main_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
-        # self.__letters_frame = LettersBoardFrame(self.main_frame, game_buttons)
-        # self.__submit_word_button = tk.Button(self.main_frame, text=SUBMIT_WORD_TEXT, **styles.ACTION_BUTTON_STYLE)
-        # self.selected_word_label = tk.Label(self.root, **styles.LABEL_STYLE)
-        # self.score_frame = tk.Frame(self.root)
-        # self.score_label = tk.Label(self.score_frame, text=INITIAL_SCORE_LABEL_TEXT, **styles.LABEL_STYLE, width=5)
-        # self.correct_words_frame = tk.Frame(self.main_frame)
-        # self.score_frame_init()
-        # self.__game_buttons = self.__letters_frame.get_game_buttons()
-        # self.correct_words = {}
-        # self._position_frames()
-
+    def update_timer_label(self):
+        formatted_time = f"{(self.seconds// 60):02} : {(self.seconds%60):02}" # pad with zeros if there is only one digit
+        self.timer_display_label.configure(text=formatted_time)
 
     def set_correct_word(self, last_correct_word):
         if last_correct_word and last_correct_word not in self.correct_words:
@@ -70,9 +65,24 @@ class BoggleGUI:
         self.correct_words_frame.pack(side=tk.LEFT, padx=24)
         self.main_frame.pack(padx=20, pady=30, fill=tk.BOTH)
         self.score_frame.pack(side=tk.BOTTOM, pady=(0, 20))
+        self.timer_display_label.pack()
         self.start_game_button.pack()
         self.enter_frame.pack()
         # self.game_frame.pack(expand=True, fill=tk.BOTH)
+
+    def finish_game(self):
+        self.game_frame.pack_forget()
+
+    def start_timer(self):
+        def countdown_seconds():
+            self.update_timer_label()
+            self.seconds -= 1
+            if self.seconds < 0:
+                self.finish_game()
+
+        for i in range(self.seconds+1):
+            self.root.after(1000*i, countdown_seconds)
+
 
     def show_game_frame(self):
         self.enter_frame.pack_forget()
