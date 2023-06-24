@@ -83,6 +83,7 @@ class BoggleController:
             self.restart_game()
             self.reset_buttons_state()
             self.gui.show_game_frame_play_again()
+            self.gui.create_new_board(self.game.get_game_buttons())
             self.gui.set_game_time_in_seconds(self.game.get_game_time())
             self.gui.start_timer()
         return play_again

@@ -10,16 +10,16 @@ GAME_TIME = 15
 class BoggleGame:
     """Manage boggle game logic"""
     def __init__(self):
-        self.__board = [['A', 'L', 'N', 'WF'], ['T', 'L', 'E', 'L'], ['C', 'O', 'G', 'Y'], ['S', 'E', 'R', 'H']]
+        print("init game")
         self.__words = helpers.create_words_set(WORDS_TXT_DICT_PATH)
-        # self.__board = randomize_board()
+        self.__board = randomize_board()
+        print(self.__board)
         self.__score = 0
         self.time = GAME_TIME
         self.selected_path = []
         self.correct_words = []
         self.next_valid_moves = []
         self.game_buttons = self.create_game_buttons_dict()
-
 
 
     def create_game_buttons_dict(self) -> Dict[Location, str]:
@@ -70,7 +70,6 @@ class BoggleGame:
         if not self.selected_path:
             return []
         valid_moves = []
-        print(self.selected_path[-1])
         neighbors = helpers.all_valid_neighbors(self.selected_path[-1], self.__board)
         for neighbor in neighbors:
             if neighbor not in self.selected_path:
