@@ -8,7 +8,7 @@ LETTER_BUTTON_STYLE = {
 }
 
 ACTION_BUTTON_STYLE = {
-    "font": (DEFAULT_FONT_TYPE, 10),
+    "font": (DEFAULT_FONT_TYPE, 15),
     "bg": colors.BUTTONS_COLOR,
     "fg": colors.BUTTONS_TEXT_COLOR,
     "width": 15,
@@ -21,7 +21,7 @@ MAIN_WINDOW_STYLE = {
 
 LABEL_STYLE = {
     "font": (DEFAULT_FONT_TYPE, 20),
-    "bg": colors.SUBMIT_BUTTON_COLOR,
+    "bg": colors.LABEL_COLOR,
     "fg": colors.BUTTONS_TEXT_COLOR
 }
 
