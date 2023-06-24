@@ -80,8 +80,8 @@ class BoggleController:
 
     def click_on_play_again(self):
         def play_again():
-            self.reset_buttons_state()
             self.restart_game()
+            self.reset_buttons_state()
             self.gui.show_game_frame_play_again()
             self.gui.set_game_time_in_seconds(self.game.get_game_time())
             self.gui.start_timer()
