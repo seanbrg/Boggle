@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Callable
+from typing import Dict, Tuple
 from boggle_board_randomizer import randomize_board
 import ex11_utils
 import helpers
@@ -7,17 +7,15 @@ WORDS_TXT_DICT_PATH = "boggle_dict.txt"
 
 Location = Tuple[int, int]
 
-GAME_TIME = 20
+GAME_TIME = 10
 
 
 class BoggleGame:
     """Manage boggle game logic"""
 
     def __init__(self):
-        print("init game")
         self.__words = helpers.create_words_set(WORDS_TXT_DICT_PATH)
         self.__board = randomize_board()
-        print(self.__board)
         self.__score = 0
         self.time = GAME_TIME
         self.selected_path = []
@@ -50,7 +48,7 @@ class BoggleGame:
 
     def get_selected_path(self):
         return self.selected_path
-    
+
     def sumbit_guessed_word(self):
         correct_word = ex11_utils.is_valid_path(self.__board, self.selected_path, self.__words)
         if correct_word and not correct_word in self.correct_words:
@@ -84,4 +82,3 @@ class BoggleGame:
 
 if __name__ == '__main__':
     game = BoggleGame()
-    buttons_dict = game.get_game_buttons()

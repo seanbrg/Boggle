@@ -9,6 +9,7 @@ from consts import *
 
 Location = Tuple[int, int]
 
+
 class BoggleGUI:
     def __init__(self, game_buttons):
         self.root = tk.Tk()
@@ -16,95 +17,76 @@ class BoggleGUI:
         self.seconds = 0
         self.correct_words = []
 
-        # enter frame:
+        # enter frame elements:
         self.enter_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
         self.start_game_button = tk.Button(self.enter_frame, **styles.ACTION_BUTTON_STYLE, text=START_GAME_BUTTON_TEXT)
-        # game over frame:
+
+        # game over frame elements:
         self.game_over_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
         self.play_again_button = tk.Button(self.game_over_frame, **styles.ACTION_BUTTON_STYLE,
                                            text=PLAY_AGAIN_BUTTON_TEXT)
-        # game frame:
+        # game frame elements:
         self.game_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
-        # inner frames to organize the game display
-        self.top_game_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)
-        self.middle_game_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)
-
-        self.timer_display_label = tk.Label(self.top_game_frame, **styles.LABEL_STYLE)
-        self.selected_word_label = tk.Label(self.top_game_frame, **styles.TEXT_LABEL_STYLE)
-        self.__letters_frame = LettersBoardFrame(self.middle_game_frame, game_buttons)
-        # save the cells buttons in a dict:
-        self.__game_buttons = self.__letters_frame.get_game_buttons()
-
-        # action buttons frame:
-        self.action_button_frame = tk.Frame(self.middle_game_frame, **styles.MAIN_WINDOW_STYLE)
-        self.__submit_word_button = tk.Button(self.action_button_frame, text=SUBMIT_WORD_BUTTON_TEXT,
+        self.timer_display_label = tk.Label(self.game_frame, **styles.LABEL_STYLE)
+        self.update_timer_label()  # set the start time
+        self.selected_word_label = tk.Label(self.game_frame, **styles.TEXT_LABEL_STYLE)
+        self.__letters_frame = LettersBoardFrame(self.game_frame, game_buttons)
+        self.__game_buttons = self.__letters_frame.get_game_buttons()  # save the cells buttons in a dict:
+        self.__submit_word_button = tk.Button(self.game_frame, text=SUBMIT_WORD_BUTTON_TEXT,
                                               **styles.ACTION_BUTTON_STYLE)
-        self.__clear_word_button = tk.Button(self.action_button_frame, text=CLEAR_WORD_BUTTON_TEXT,
+        self.__clear_word_button = tk.Button(self.game_frame, text=CLEAR_WORD_BUTTON_TEXT,
                                              **styles.ACTION_BUTTON_STYLE)
+        self.score_label = tk.Label(self.game_frame, text=INITIAL_SCORE_LABEL_TEXT, **styles.LABEL_STYLE)
+        self.correct_words_frame = CorrectWordsFrame(self.game_frame)
 
-        # score frame:
-        self.score_frame = tk.Frame(self.game_frame)
-        self.score_label = tk.Label(self.score_frame, text=INITIAL_SCORE_LABEL_TEXT, **styles.LABEL_STYLE, width=5)
+        self.show_enter_frame()
 
-        #correct words frame:
-        self.correct_words_frame = CorrectWordsFrame(self.middle_game_frame)
-        self._position_frames()
+    def _config_root(self):
+        self.root.geometry("900x500")
+        self.root.configure(styles.MAIN_WINDOW_STYLE)
+        self.root.title(WINDOW_TITLE)
+
+    def position_game_frame(self):
+        """position game objects in grid"""
+        for i in range(12):
+            self.game_frame.columnconfigure(i, weight=1)
+            self.game_frame.rowconfigure(i, weight=1)
+        self.timer_display_label.grid(row=0, column=0, sticky=tk.NSEW, columnspan=12)
+        self.__letters_frame.get_letters_frame().grid(row=2, column=0, columnspan=4, rowspan=4)
+        self.__clear_word_button.grid(row=2, column=4, columnspan=2)
+        self.__submit_word_button.grid(row=4, column=4, columnspan=2)
+        self.correct_words_frame.get_frame().grid(row=2, column=8, columnspan=2, rowspan=5)
+        self.score_label.grid(row=8, column=4, columnspan=2, sticky=tk.EW)
 
     def create_new_board(self, game_buttons):
-        self.__letters_frame.get_letters_frame().pack_forget()
-        self.__letters_frame = LettersBoardFrame(self.middle_game_frame, game_buttons)
+        """reset the board and buttons for a new game"""
+        self.__letters_frame.get_letters_frame().grid_forget()
+        self.__letters_frame = LettersBoardFrame(self.game_frame, game_buttons)
         self.__game_buttons = self.__letters_frame.get_game_buttons()
-        self.__letters_frame.get_letters_frame().pack(before=self.action_button_frame, side=tk.LEFT, padx=25)
+        self.__letters_frame.get_letters_frame().grid(row=2, column=0, columnspan=4, rowspan=4)
 
     def set_game_time_in_seconds(self, seconds):
         self.seconds = seconds
 
     def update_timer_label(self):
+        """format time for display and update the label"""
         formatted_time = f"{(self.seconds // 60):02} : {(self.seconds % 60):02}"  # pad with zeros if there is only one digit
         self.timer_display_label.configure(text=formatted_time)
 
-    def set_correct_word(self, last_correct_word):
+    def add_correct_word(self, last_correct_word):
+        """add correct word to display"""
         if last_correct_word and last_correct_word not in self.correct_words:
             self.correct_words.append(last_correct_word)
             self.correct_words_frame.add_word(last_correct_word)
 
-    def position_score_frame(self):
-        """position the title and the score in a frame"""
-        score_title = tk.Label(self.score_frame, text=SCORE_TITLE, **styles.LABEL_STYLE, width=10)
-        score_title.pack(side=tk.LEFT)
-        self.score_label.pack(side=tk.LEFT)
-
-    def set_score(self, score):
-        self.score_label.configure(text=score)
-
-    def _config_root(self):
-        self.root.geometry("1000x500")
-        self.root.configure(styles.MAIN_WINDOW_STYLE)
-        self.root.title(WINDOW_TITLE)
-
-    def position_action_buttons_frame(self):
-        self.__clear_word_button.pack()
-        self.__submit_word_button.pack(pady=10)
-
-    def _position_frames(self):
-        self.timer_display_label.pack(fill=tk.BOTH,expand=True)
-        self.selected_word_label.pack(expand=True)
-        self.top_game_frame.pack(fill=tk.BOTH, expand=True)
-        self.__letters_frame.get_letters_frame().pack(side=tk.LEFT, padx=25)
-        self.position_action_buttons_frame()
-        self.action_button_frame.pack(side=tk.LEFT)
-        self.correct_words_frame.get_frame().pack(side=tk.RIGHT, padx=(0, 100))
-        self.middle_game_frame.pack(padx=20, pady=30, fill=tk.BOTH)
-        self.score_frame.pack(side=tk.BOTTOM, pady=(0, 20))
-        self.position_score_frame()
-        self.start_game_button.pack(pady=200)
-        self.enter_frame.pack()
-        self.play_again_button.pack(pady=200)
+    def set_score_label(self, score):
+        self.score_label.configure(text=f"{SCORE_TITLE} {score}")
 
     def set_selected_word(self, word):
         self.selected_word_label.configure(text=word)
 
     def get_game_letters_buttons(self):
+        """returns a dict with the game letters buttons"""
         return self.__game_buttons
 
     def set_submit_word_button_command(self, command):
@@ -120,15 +102,17 @@ class BoggleGUI:
         self.play_again_button.configure(command=command)
 
     def clear_state(self):
+        """reset display to start a new game"""
         self.set_selected_word("")
-        self.correct_words_frame.remove_correct_words_labels()
+        self.correct_words_frame.remove_correct_words_labels()  # todo: fix the white space bug, maybe create a new CorrectWordsFrame?
         self.correct_words.clear()
-        self.set_score("0")
+        self.set_score_label(0)
 
     def finish_game(self):
+        """clear state, switch from game frame to game over frame"""
         self.clear_state()
         self.game_frame.pack_forget()
-
+        self.play_again_button.pack(pady=150)
         self.game_over_frame.pack()
 
     def start_timer(self):
@@ -141,12 +125,19 @@ class BoggleGUI:
         for i in range(self.seconds + 1):
             self.root.after(1000 * i, countdown_seconds)
 
+    def show_enter_frame(self):
+        self.start_game_button.pack(pady=150)
+        self.enter_frame.pack()
+
     def show_game_frame(self):
         self.enter_frame.pack_forget()
+        self.position_game_frame()
         self.game_frame.pack(expand=True, fill=tk.BOTH)
 
     def show_game_frame_play_again(self):
+        """switch the game over frame to game frame"""
         self.game_over_frame.pack_forget()
+        self.position_game_frame()
         self.game_frame.pack(expand=True, fill=tk.BOTH)
 
     def set_button_clicked(self, cell):
@@ -160,9 +151,11 @@ class BoggleGUI:
         self.__game_buttons[cell].set_state(BUTTON_NORNAL_STATE)
 
     def highlight_button_color(self, cell):
+        """changes the button color"""
         self.__game_buttons[cell].set_bg_color(colors.HIGHLIGHTED_BUTTON_COLOR)
 
-    def disable_button(self, cell):
+    def disable_game_button(self, cell):
+        """disable game cell button"""
         self.__game_buttons[cell].set_state(BUTTON_DISABLED_STATE)
 
     def run_gui(self):
