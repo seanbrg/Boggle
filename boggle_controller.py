@@ -12,13 +12,14 @@ class BoggleController:
         self.gui = BoggleGUI(self.game.get_game_buttons())
         self.set_buttons_commands()
 
+
+    def set_letter_buttons_commands(self):
+        letters_buttons = self.game.get_game_buttons()
+        for button in letters_buttons:
+            self.gui.set_letter_button_command(button, self.click_on_letter_button(button))
     def set_buttons_commands(self):
         """bind buttons to actions"""
-
-        letters_buttons = self.gui.get_game_letters_buttons()
-        for button in letters_buttons:
-            letters_buttons[button].set_command(self.click_on_letter_button(button))
-
+        self.set_letter_buttons_commands()
         self.gui.set_submit_word_button_command(self.click_on_submit_word())
         self.gui.set_clear_word_button_command(self.click_on_clear_word())
         self.gui.set_start_game_button_command(self.click_on_start_game())
@@ -77,16 +78,13 @@ class BoggleController:
 
         return start_game
 
-    def restart_game(self):
-        self.game = BoggleGame()
-        self.set_buttons_commands()
 
     def click_on_play_again(self):
         def play_again():
             self.game = BoggleGame()
             self.gui.show_game_frame_play_again()
             self.gui.create_new_board(self.game.get_game_buttons())  # create a new board from the new game buttons
-            self.set_buttons_commands()  # set command actions for the new buttons
+            self.set_letter_buttons_commands()  # set command actions for the new buttons
             self.gui.set_game_time_in_seconds(self.game.get_game_time())  # reset the time
             self.gui.start_timer()
 

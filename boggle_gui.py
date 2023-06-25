@@ -52,6 +52,7 @@ class BoggleGUI:
             self.game_frame.columnconfigure(i, weight=1)
             self.game_frame.rowconfigure(i, weight=1)
         self.timer_display_label.grid(row=0, column=0, sticky=tk.NSEW, columnspan=12)
+        self.selected_word_label.grid(row=1, column=4, sticky=tk.W)
         self.__letters_frame.get_letters_frame().grid(row=2, column=0, columnspan=4, rowspan=4)
         self.__clear_word_button.grid(row=2, column=4, columnspan=2)
         self.__submit_word_button.grid(row=4, column=4, columnspan=2)
@@ -85,9 +86,8 @@ class BoggleGUI:
     def set_selected_word(self, word):
         self.selected_word_label.configure(text=word)
 
-    def get_game_letters_buttons(self):
-        """returns a dict with the game letters buttons"""
-        return self.__game_buttons
+    def set_letter_button_command(self, cell, command):
+        self.__game_buttons[cell].set_command(command)
 
     def set_submit_word_button_command(self, command):
         self.__submit_word_button.configure(command=command)
