@@ -5,20 +5,9 @@ import colors
 import styles
 from gui_elements.letters_board_frame import LettersBoardFrame
 from gui_elements.correct_words_frame import CorrectWordsFrame
-
+from consts import *
 
 Location = Tuple[int, int]
-
-WINDOW_TITLE = "Boggle"
-SUBMIT_WORD_BUTTON_TEXT = "Submit"
-CLEAR_WORD_BUTTON_TEXT = "Clear"
-SCORE_TITLE = "Score: "
-INITIAL_SCORE_LABEL_TEXT = "0"
-START_GAME_BUTTON_TEXT = "Start Game"
-PLAY_AGAIN_BUTTON_TEXT = "Play Again"
-BUTTON_DISABLED_STATE = "disabled"
-BUTTON_NORNAL_STATE = "normal"
-
 
 class BoggleGUI:
     def __init__(self, game_buttons):
@@ -36,9 +25,12 @@ class BoggleGUI:
                                            text=PLAY_AGAIN_BUTTON_TEXT)
         # game frame:
         self.game_frame = tk.Frame(self.root, **styles.MAIN_WINDOW_STYLE)
-        self.timer_display_label = tk.Label(self.game_frame, **styles.LABEL_STYLE)
-        self.middle_game_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)  # to organize the game display
-        self.selected_word_label = tk.Label(self.game_frame, **styles.TEXT_LABEL_STYLE)
+        # inner frames to organize the game display
+        self.top_game_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)
+        self.middle_game_frame = tk.Frame(self.game_frame, **styles.MAIN_WINDOW_STYLE)
+
+        self.timer_display_label = tk.Label(self.top_game_frame, **styles.LABEL_STYLE)
+        self.selected_word_label = tk.Label(self.top_game_frame, **styles.TEXT_LABEL_STYLE)
         self.__letters_frame = LettersBoardFrame(self.middle_game_frame, game_buttons)
         # save the cells buttons in a dict:
         self.__game_buttons = self.__letters_frame.get_game_buttons()
@@ -61,6 +53,7 @@ class BoggleGUI:
     def create_new_board(self, game_buttons):
         self.__letters_frame.get_letters_frame().pack_forget()
         self.__letters_frame = LettersBoardFrame(self.middle_game_frame, game_buttons)
+        self.__game_buttons = self.__letters_frame.get_game_buttons()
         self.__letters_frame.get_letters_frame().pack(before=self.action_button_frame, side=tk.LEFT, padx=25)
 
     def set_game_time_in_seconds(self, seconds):
@@ -94,8 +87,9 @@ class BoggleGUI:
         self.__submit_word_button.pack(pady=10)
 
     def _position_frames(self):
-        self.timer_display_label.pack(expand=True, fill=tk.BOTH)
-        self.selected_word_label.pack(fill=tk.X)
+        self.timer_display_label.pack(fill=tk.BOTH,expand=True)
+        self.selected_word_label.pack(expand=True)
+        self.top_game_frame.pack(fill=tk.BOTH, expand=True)
         self.__letters_frame.get_letters_frame().pack(side=tk.LEFT, padx=25)
         self.position_action_buttons_frame()
         self.action_button_frame.pack(side=tk.LEFT)

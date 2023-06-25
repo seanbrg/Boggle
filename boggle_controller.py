@@ -21,9 +21,7 @@ class BoggleController:
         self.gui.set_play_again_button_command(self.click_on_play_again())
 
 
-    def restart_game(self):
-        self.game = BoggleGame()
-        self.set_buttons_commands()
+
 
     def highlight_valid_next_moves(self, valid_moves):
         for button in self.game.get_game_buttons():
@@ -39,7 +37,6 @@ class BoggleController:
             self.game.add_selected_cell(button_cell_location)
             self.gui.set_selected_word(self.game.get_selected_path_word())
             self.gui.set_button_clicked(button_cell_location)
-            print(self.game.get_valid_next_move_cells())
             self.highlight_valid_next_moves(self.game.get_valid_next_move_cells())
         return select_letter
 
@@ -77,13 +74,15 @@ class BoggleController:
             self.gui.start_timer()
         return start_game
 
-
+    def restart_game(self):
+        self.game = BoggleGame()
+        self.set_buttons_commands()
     def click_on_play_again(self):
         def play_again():
-            self.restart_game()
-            self.reset_buttons_state()
+            self.game = BoggleGame()
             self.gui.show_game_frame_play_again()
             self.gui.create_new_board(self.game.get_game_buttons())
+            self.set_buttons_commands()
             self.gui.set_game_time_in_seconds(self.game.get_game_time())
             self.gui.start_timer()
         return play_again
