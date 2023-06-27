@@ -20,10 +20,10 @@ class BoggleController:
     def set_buttons_commands(self):
         """bind buttons to actions"""
         self.set_letter_buttons_commands()
-        self.gui.set_submit_word_button_command(self.click_on_submit_word())
-        self.gui.set_clear_word_button_command(self.click_on_clear_word())
-        self.gui.set_start_game_button_command(self.click_on_start_game())
-        self.gui.set_play_again_button_command(self.click_on_play_again())
+        self.gui.set_submit_word_button_command(self.click_on_submit_word)
+        self.gui.set_clear_word_button_command(self.click_on_clear_word)
+        self.gui.set_start_game_button_command(self.click_on_start_game)
+        self.gui.set_play_again_button_command(self.click_on_play_again)
 
     def highlight_valid_next_moves(self, valid_moves: List[Location]):
         """get a list of valid moves button names (locations) and change their color on the board"""
@@ -53,41 +53,29 @@ class BoggleController:
                 self.gui.set_button_not_clicked(button)
 
     def click_on_submit_word(self):
-        def submit_word():
-            self.game.submit_guessed_word()
-            self.gui.set_selected_word("")  # clear the display for the next guess
-            self.reset_buttons_state()
-            self.gui.set_score_label(self.game.get_score())  # update the new score
-            self.gui.add_correct_word(self.game.get_last_correct_word())  # update the correct words display
-
-        return submit_word
+        self.game.submit_guessed_word()
+        self.gui.set_selected_word("")  # clear the display for the next guess
+        self.reset_buttons_state()
+        self.gui.set_score_label(self.game.get_score())  # update the new score
+        self.gui.add_correct_word(self.game.get_last_correct_word())  # update the correct words display
 
     def click_on_clear_word(self):
-        def clear_word():
-            self.game.clear_selected_path()
-            self.gui.set_selected_word("")
-            self.reset_buttons_state()
-
-        return clear_word
+        self.game.clear_selected_path()
+        self.gui.set_selected_word("")
+        self.reset_buttons_state()
 
     def click_on_start_game(self):
-        def start_game():
-            self.gui.show_game_frame()
-            self.gui.set_game_time_in_seconds(self.game.get_game_time())  # set the time by the game setting
-            self.gui.start_timer()
-
-        return start_game
+        self.gui.show_game_frame()
+        self.gui.set_game_time_in_seconds(self.game.get_game_time())  # set the time by the game setting
+        self.gui.start_timer()
 
     def click_on_play_again(self):
-        def play_again():
-            self.game = BoggleGame()
-            self.gui.show_game_frame_after_play_again()
-            self.gui.create_new_board(self.game.get_game_buttons())  # create a new board from the new game buttons
-            self.set_letter_buttons_commands()  # set command actions for the new buttons
-            self.gui.set_game_time_in_seconds(self.game.get_game_time())  # reset the time
-            self.gui.start_timer()
-
-        return play_again
+        self.game = BoggleGame()
+        self.gui.show_game_frame_after_play_again()
+        self.gui.create_new_board(self.game.get_game_buttons())  # create a new board from the new game buttons
+        self.set_letter_buttons_commands()  # set command actions for the new buttons
+        self.gui.set_game_time_in_seconds(self.game.get_game_time())  # reset the time
+        self.gui.start_timer()
 
     def play(self):
         self.gui.run_gui()
