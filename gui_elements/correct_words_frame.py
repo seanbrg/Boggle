@@ -5,7 +5,7 @@ import styles
 class CorrectWordsFrame:
     """A frame for correct words"""
     def __init__(self, root):
-        self.correct_words_frame = tk.Frame(root)
+        self.correct_words_frame = tk.Frame(root, **styles.MAIN_WINDOW_STYLE)
         self.correct_words = {}
 
     def get_frame(self):

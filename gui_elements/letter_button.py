@@ -19,7 +19,9 @@ class LetterButton:
 
     def set_command(self, command: Callable[[], None]) -> None:
         self.button.configure(command=command)
+
     def set_bg_color(self, color):
         self.button.configure(bg=color)
+
     def set_state(self, state):
         self.button.configure(state=state)
