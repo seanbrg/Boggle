@@ -1,8 +1,10 @@
 import tkinter as tk
 from gui_elements.letter_button import LetterButton
 
+
 class LettersBoardFrame:
     """A frame with GameButtons for Boggle game"""
+
     def __init__(self, root, game_buttons):
         self.letters_frame = tk.Frame(root)
         self._configure_grid()
