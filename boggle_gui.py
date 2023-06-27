@@ -79,16 +79,16 @@ class BoggleGUI:
         formatted_time = f"{(self.__seconds // 60):02} : {(self.__seconds % 60):02}"  # pad with zeros if there is only one digit
         self.__timer_display_label.configure(text=formatted_time)
 
-    def add_correct_word(self, last_correct_word):
+    def add_correct_word(self, last_correct_word: str):
         """add correct word to display"""
         if last_correct_word and last_correct_word not in self.__correct_words:
             self.__correct_words.append(last_correct_word)
             self.__correct_words_frame.add_word(last_correct_word)
 
-    def set_score_label(self, score):
+    def set_score_label(self, score: int):
         self.__score_label.configure(text=f"{SCORE_TITLE} {score}")
 
-    def set_selected_word(self, word):
+    def set_selected_word(self, word: str):
         self.__selected_word_label.configure(text=word)
 
     def set_letter_button_command(self, cell, command):
@@ -147,21 +147,21 @@ class BoggleGUI:
         self.__position_game_frame()
         self.__game_frame.pack(expand=True, fill=tk.BOTH)
 
-    def set_button_clicked(self, cell):
+    def set_button_clicked(self, cell: Location):
         """changes the button color and state"""
         self.__game_buttons[cell].set_bg_color(colors.CLICKED_BUTTON_COLOR)
         self.__game_buttons[cell].set_state(BUTTON_DISABLED_STATE)
 
-    def set_button_not_clicked(self, cell):
+    def set_button_not_clicked(self, cell: Location):
         """changes the button color and state"""
         self.__game_buttons[cell].set_bg_color(colors.BUTTONS_COLOR)
         self.__game_buttons[cell].set_state(BUTTON_NORMAL_STATE)
 
-    def highlight_button_color(self, cell):
+    def highlight_button_color(self, cell:Location):
         """changes the button color"""
         self.__game_buttons[cell].set_bg_color(colors.HIGHLIGHTED_BUTTON_COLOR)
 
-    def disable_game_button(self, cell):
+    def disable_game_button(self, cell: Location):
         """disable game cell button"""
         self.__game_buttons[cell].set_state(BUTTON_DISABLED_STATE)
 

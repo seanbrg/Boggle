@@ -54,7 +54,7 @@ class BoggleController:
 
     def click_on_submit_word(self):
         def submit_word():
-            self.game.sumbit_guessed_word()
+            self.game.submit_guessed_word()
             self.gui.set_selected_word("")  # clear the display for the next guess
             self.reset_buttons_state()
             self.gui.set_score_label(self.game.get_score())  # update the new score
