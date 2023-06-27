@@ -12,7 +12,7 @@ class CorrectWordsFrame:
         return self.correct_words_frame
 
     def add_word(self, word):
-        self.correct_words[word] = tk.Label(self.correct_words_frame, text=word, **styles.CORRECT_WORDS_LABEL_STYLE)
+        self.correct_words[word] = tk.Label(self.correct_words_frame, text=word, **styles.NO_BACKGROUND_LABEL_STYLE)
         self.correct_words[word].pack(fill=tk.BOTH, side=tk.TOP)
 
     def remove_correct_words_labels(self):

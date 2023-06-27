@@ -12,11 +12,11 @@ class BoggleController:
         self.gui = BoggleGUI(self.game.get_game_buttons())
         self.set_buttons_commands()
 
-
     def set_letter_buttons_commands(self):
         letters_buttons = self.game.get_game_buttons()
         for button in letters_buttons:
             self.gui.set_letter_button_command(button, self.click_on_letter_button(button))
+
     def set_buttons_commands(self):
         """bind buttons to actions"""
         self.set_letter_buttons_commands()
@@ -78,11 +78,10 @@ class BoggleController:
 
         return start_game
 
-
     def click_on_play_again(self):
         def play_again():
             self.game = BoggleGame()
-            self.gui.show_game_frame_play_again()
+            self.gui.show_game_frame_after_play_again()
             self.gui.create_new_board(self.game.get_game_buttons())  # create a new board from the new game buttons
             self.set_letter_buttons_commands()  # set command actions for the new buttons
             self.gui.set_game_time_in_seconds(self.game.get_game_time())  # reset the time
