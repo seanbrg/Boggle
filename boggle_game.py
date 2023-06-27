@@ -12,7 +12,7 @@ GAME_TIME = 10
 
 class BoggleGame:
     """Manage Boggle game logic"""
-    GAME_TIME_IN_SECONDS = 10
+    GAME_TIME_IN_SECONDS = 180
 
     def __init__(self):
         self.__words = helpers.create_words_set(WORDS_TXT_DICT_PATH)
