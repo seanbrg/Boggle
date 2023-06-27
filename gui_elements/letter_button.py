@@ -1,5 +1,4 @@
 import tkinter as tk
-from typing import Callable
 import styles
 
 
@@ -17,7 +16,7 @@ class LetterButton:
     def get_button(self):
         return self.button
 
-    def set_command(self, command: Callable[[], None]) -> None:
+    def set_command(self, command) -> None:
         self.button.configure(command=command)
 
     def set_bg_color(self, color):

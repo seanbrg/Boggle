@@ -7,8 +7,6 @@ WORDS_TXT_DICT_PATH = "boggle_dict.txt"
 
 Location = Tuple[int, int]
 
-GAME_TIME = 10
-
 
 class BoggleGame:
     """Manage Boggle game logic"""
