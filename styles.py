@@ -19,6 +19,7 @@ MAIN_WINDOW_STYLE = {
     "bg": colors.BACKGROUND_COLOR
 }
 
+
 LABEL_STYLE = {
     "font": (DEFAULT_FONT_TYPE, 20),
     "bg": colors.LABEL_COLOR,
@@ -26,7 +27,7 @@ LABEL_STYLE = {
 }
 
 
-CORRECT_WORDS_LABEL_STYLE ={
+NO_BACKGROUND_LABEL_STYLE ={
     "font": (DEFAULT_FONT_TYPE, 20),
     "bg": colors.BACKGROUND_COLOR
 }
