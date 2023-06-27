@@ -1,1 +1,6 @@
 <Describe your project's features here>
+The GUI contains a grid of buttons, a scoreboard, a clock and a list of all words that have been found.
+It operates like a standard Boggle game - once a valid word is selected, letter by letter, and submitted,
+it joins the list of words.
+A unique feature we have added is that buttons that are not "neighbors" of the last selected button are disabled,
+thus making the player only select a path valid according to the rules.
